@@ -7,6 +7,7 @@ from torchvision import models, transforms
 from torch.nn.functional import cosine_similarity
 from PIL import Image
 import glob
+import re
 
 class ImageSearch:
     def __init__(self, folder='./baiges/downloaded_images/*.jpg', name = "images", username = 'demo', password = 'demo', hostname='localhost', port='1972', namespace='USER', recalculate=True):
@@ -65,6 +66,17 @@ class ImageSearch:
         image = Image.open(image_path).convert('RGB')  # Convertir la imagen a RGB
         image = transform(image).unsqueeze(0)  # Añade una dimensión al principio
         return image
+    def clean_image_name(self, file_path):
+        base_name = os.path.basename(file_path).replace('.jpg', '')
+        
+        # Delete any numbers and underscores at the end of the file name
+        clean_name = re.sub(r'_[0-9]+$', '', base_name)
+        
+        # Replace any remaining underscores with spaces
+        clean_name = clean_name.replace('_', ' ')
+        
+        return clean_name
+
     def get_embedding(self, image_tensor):
         with torch.no_grad():
             embedding = self.model(image_tensor)
@@ -97,6 +109,8 @@ class ImageSearch:
                 """)
                 results = conn.execute(sql, {'search_vector': str(search_vector)}).fetchall()
         results_df = pd.DataFrame(results, columns=["monument_name", "description_vector"])
+
+        results_df["monument_name"] = [self.clean_image_name(e) for e in results_df["monument_name"]]
         pd.set_option('display.max_colwidth', None)  # Easier to read description
         return results_df
 
