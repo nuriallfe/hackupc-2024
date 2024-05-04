@@ -1,9 +1,13 @@
 import tkinter as tk
+import pandas as pd
+import geopandas as gpd
+from geopandas import GeoDataFrame
+from shapely.geometry import Point
 from sql_class import CloseSearch
-from tkinter import messagebox
 from gpt_class import MonumentsSearch
-import textwrap
+import matplotlib.pyplot as plt
 
+# Initialize MonumentsSearch
 monuments_search = MonumentsSearch(
     data_file_path="./data/data.csv",
     landmark_column="landmark",
@@ -13,38 +17,55 @@ monuments_search = MonumentsSearch(
 
 # Function to process the text description
 def process_description():
-    result_file = ""
-    description = description_entry.get()
-    
-    # Call your models here to process the description
-    # For now, let's just display a simple message based on the description
-    result_text = f"You want to go to: {description}"
+    result_text = description_entry.get()
+    if not result_text:
+        result_text = "Por favor, ingrese una descripción."
+    else:
+        # Search for similar landmarks
+        searcher = CloseSearch(file="./data/data.csv", name="monuments", textual_var="wiki_content")
+        results = searcher.search_similars(result_text, number=3)
 
-    searcher = CloseSearch(file="./data/data.csv", name="monuments", textual_var = "wiki_content")
-    
-    results = searcher.search_similars(result_text, number=3)
+        # Plot the landmarks on a map
+        geometry = [Point(xy) for xy in zip(results['longitude'], results['latitude'])]
+        gdf = GeoDataFrame(results, geometry=geometry)   
+        world = gpd.read_file(gpd.datasets.get_path('naturalearth_lowres'))
+        ax = world.plot(figsize=(10, 6))
+        gdf.plot(ax=ax, marker='o', color='red', markersize=15)
+        
+        # Display information about the landmarks
+        result_text = ""
+        for landmark in results["landmark"]:
+            response = monuments_search.query(f"¿Qué sabes sobre el monumento {landmark}?")
+            result_text += f"\n\n#{landmark}\n{response}"
 
-    for land in results["landmark"]:
-        response = monuments_search.query(f"Give me all you know about about the {land} landmark.")
-        result_file += f"# {land}"
-        result_file += "\n" + (str(response)) + "\n"
-        print(textwrap.fill(str(response), 100))
-    # Display the result in a message box
-    messagebox.showinfo("Result", result_file)
+    result_display.config(state=tk.NORMAL)
+    result_display.delete(1.0, tk.END)
+    result_display.insert(tk.END, result_text)
+    result_display.config(state=tk.DISABLED)
 
 # Create the main window
 root = tk.Tk()
-root.title("Where do you want to go?")
+root.title("¿Dónde quieres ir?")
+root.geometry("800x600")
+
+# Add some styling
+root.configure(bg="#f0f0f0")
+root.option_add("*Font", "Arial 12")
 
 # Create a label and entry for the description
-description_label = tk.Label(root, text="Enter a text description of where you want to go:")
-description_label.pack()
-description_entry = tk.Entry(root, width=50)
-description_entry.pack()
+description_label = tk.Label(root, text="Ingresa una descripción del lugar que quieres visitar:", bg="#f0f0f0")
+description_label.pack(pady=10)
+description_entry = tk.Entry(root, width=70)
+description_entry.pack(pady=5)
 
 # Create a button to process the description
-process_button = tk.Button(root, text="Process", command=process_description)
-process_button.pack()
+process_button = tk.Button(root, text="Procesar", command=process_description, bg="#4CAF50", fg="white")
+process_button.pack(pady=10)
+
+# Create an area to display the result
+result_display = tk.Text(root, width=100, height=20, state=tk.DISABLED)
+result_display.pack(pady=10)
 
 # Run the application
 root.mainloop()
+
