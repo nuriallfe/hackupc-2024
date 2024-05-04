@@ -20,12 +20,7 @@ import getpass
 import os
 from dotenv import load_dotenv
 
-load_dotenv(override=True)
-
-if not os.environ.get("OPENAI_API_KEY"):
-    os.environ["OPENAI_API_KEY"] = getpass.getpass("OpenAI API Key:")
-
-
+load_dotenv()
 class MonumentsSearch:
     def __init__(
         self,
@@ -54,16 +49,7 @@ class MonumentsSearch:
         self.openai_embedding_model = openai_embedding_model
         self.vector_table_name = vector_table_name
         self.vector_embed_dim = vector_embed_dim
-
-    def read_data(self):
-        df = pd.read_csv(self.data_file_path)
-        for i, e in df.iterrows():
-            with open(
-                f"{self.landmarks_directory}/{e[self.landmark_column]}.txt",
-                "w",
-                encoding="utf8",
-            ) as w:
-                w.write(e[self.wiki_content_column])
+        self.query_engine = False
 
     def setup_iris_connection(self):
         global CONNECTION_STRING
@@ -78,9 +64,8 @@ class MonumentsSearch:
         return CONNECTION_STRING
 
     def setup_openai(self):
-        if not self.openai_api_key:
-            self.openai_api_key = getpass.getpass("OpenAI API Key:")
-        os.environ["OPENAI_API_KEY"] = self.openai_api_key
+        if not os.environ.get("OPENAI_API_KEY"):
+            os.environ["OPENAI_API_KEY"] = getpass.getpass("OpenAI API Key:")
         llm = OpenAI(model=self.llama_model, temperature=0.01)
         embed_model = OpenAIEmbedding()
         service_context = ServiceContext.from_defaults(llm=llm, embed_model=embed_model)
@@ -102,10 +87,14 @@ class MonumentsSearch:
             show_progress=True,
             service_context=service_context,
         )
+        self.query_engine = index.as_query_engine()
         return index.as_query_engine()
 
     def query(self, query_text):
-        query_engine = self.build_index()
+        if not self.query_engine:
+            query_engine = self.build_index()
+        else:
+            query_engine = self.query_engine
         response = query_engine.query(query_text)
         return response
 
@@ -117,9 +106,9 @@ monuments_search = MonumentsSearch(
     wiki_content_column="wiki_content",
     landmarks_directory="./data/monuments",
 )
-monuments_search.read_data()
 
-response = monuments_search.query("All the monuments that are in Amsterdam")
+
+response = monuments_search.query("Give me all the information about the Van Gogh Museum")
 print(textwrap.fill(str(response), 100))
 
 response = monuments_search.query("What happened in the mid 1980s?")
