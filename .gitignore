@@ -3,4 +3,5 @@ __pycache__
 clean_data
 data/monuments
 images
-.env
+*.env
+iris-vector-search
