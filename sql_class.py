@@ -3,7 +3,7 @@ import pandas as pd
 from sentence_transformers import SentenceTransformer
 from sqlalchemy import create_engine, text
 
-class MonumentSearch:
+class CloseSearch:
     def __init__(self, file='./data/data.csv', name = "monuments", textual_var = "wiki_content", username = 'demo', password = 'demo', hostname='localhost', port='1972', namespace='USER'):
         self.name = name
         self.username = username
@@ -74,7 +74,7 @@ class MonumentSearch:
                     to_execute['description_vector'] = str(row['description_vector'])
                     conn.execute(sql, to_execute)
 
-    def search_monuments(self, description_search, condition = "", number= 10):
+    def search_similars(self, description_search, condition = "", number= 10):
         search_vector = self.model.encode(description_search, normalize_embeddings=True).tolist()
         with self.engine.connect() as conn:
             with conn.begin():
