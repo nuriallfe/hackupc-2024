@@ -3,16 +3,27 @@ const showdown = require('showdown'); // Import the Showdown library for Markdow
 
 document.addEventListener('DOMContentLoaded', () => {
     const processButton = document.getElementById('process-button');
+    const imageUploadInput = document.getElementById('image-upload');
 
     processButton.addEventListener('click', () => {
         const userInput = document.getElementById('description-entry').value.trim();
-        if (!userInput) {
-            displayMessage("Please, enter a description.", "system");
+        const imageURL = imageUploadInput.files.length > 0 ? imageUploadInput.files[0].path : null;
+
+        if (!userInput && !imageURL) {
+            displayMessage("Please, enter a description or upload an image.", "system");
             return;
         }
-        displayMessage(`<span style="color:#25733f">**You:** ${userInput}<\span>`, "user");
-        ipcRenderer.send('process-description', userInput);
-        document.getElementById('description-entry').value = ''; // Clear input field
+
+        if (userInput) {
+            displayMessage(`<span style="color:#25733f">**You:** ${userInput}</span>`, "user");
+            ipcRenderer.send('process-description', userInput);
+            document.getElementById('description-entry').value = ''; // Clear input field
+        }
+
+        if (imageURL) {
+            ipcRenderer.send('process-image', imageURL);
+            imageUploadInput.value = ''; // Clear the file input
+        }
     });
 
     ipcRenderer.on('display-conversation', (event, text, sender) => {
