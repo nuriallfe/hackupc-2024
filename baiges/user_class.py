@@ -1,30 +1,61 @@
-class User:
-    def __init__(self, user_id, preferences, visited_places):
-        """
-        Args:
-            user_id (int): The id of the user.
-            preferences (list): A list of strings representing the user's preferences.
-            visited_places (list): A list of strings representing the places the user has visited.
-        """
-        self.user_id = user_id
-        self.preferences = preferences
-        self.visited_places = visited_places
+import pandas as pd
+from sqlalchemy import create_engine, text
 
-    def update_preferences(self, new_preferences):
+class UserManager:
+    def __init__(self, username='demo', password='demo', hostname='localhost', port='1972', namespace='USER'):
         """
-        Update the user's preferences with new preferences.
+        Initialize the UserManager class with database connection details.
         """
-        self.preferences.update(new_preferences)
+        self.username = username
+        self.password = password
+        self.hostname = hostname
+        self.port = port
+        self.namespace = namespace
+        self.engine = None
+        self.connect_to_database()
+        self.create_user_table()
 
-    def add_visited_place(self, place):
+    def connect_to_database(self):
         """
-        Add a place to the list of visited places.
+        Establish a connection to the SQL database.
         """
-        if place not in self.visited_places:
-            self.visited_places.append(place)
+        CONNECTION_STRING = f"iris://{self.username}:{self.password}@{self.hostname}:{self.port}/{self.namespace}"
+        self.engine = create_engine(CONNECTION_STRING)
 
-    def calculate_user_similarity(self, other_user):
+    def create_user_table(self):
         """
-        Calculate the similarity between this user and another user in order to possibly create friend recommendations.
+        Create a SQL table to store user information if it doesn't exist.
         """
-        return len(set(self.preferences).intersection(other_user.preferences))
+        with self.engine.connect() as conn:
+            with conn.begin():
+                conn.execute(text("""
+                    CREATE TABLE IF NOT EXISTS users (
+                        user_id INT PRIMARY KEY,
+                        preferences VARCHAR(200),
+                        visited_places VARCHAR(20000)
+                    )
+                """))
+
+    def update_user_info(self, user_id, new_preferences=None, new_places=None):
+        """
+        Update user preferences and visited places in the database.
+        """
+        with self.engine.connect() as conn:
+            with conn.begin():
+                if new_preferences:
+                    conn.execute(text(f"UPDATE users SET preferences = :preferences WHERE user_id = :user_id"),
+                                 {'preferences': new_preferences, 'user_id': user_id})
+                if new_places:
+                    conn.execute(text(f"UPDATE users SET visited_places = :visited_places WHERE user_id = :user_id"),
+                                 {'visited_places': new_places, 'user_id': user_id})
+
+    def add_user(self, user_id, preferences, visited_places):
+        """
+        Add a new user to the database.
+        """
+        with self.engine.connect() as conn:
+            with conn.begin():
+                conn.execute(text("""
+                    INSERT INTO users (user_id, preferences, visited_places)
+                    VALUES (:user_id, :preferences, :visited_places)
+                """), {'user_id': user_id, 'preferences': preferences, 'visited_places': visited_places})
