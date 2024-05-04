@@ -4,11 +4,12 @@ from sentence_transformers import SentenceTransformer
 from sqlalchemy import create_engine, text
 
 class CloseSearch:
-    def __init__(self, file='./data/data.csv', name = "monuments", textual_var = "wiki_content", username = 'demo', password = 'demo', hostname='localhost', port='1972', namespace='USER'):
+    def __init__(self, file='./data/data.csv', name = "monuments", textual_var = "wiki_content", username = 'demo', password = 'demo', hostname='localhost', port='1972', namespace='USER', recalculate = False):
         self.name = name
         self.username = username
         self.password = password
         self.hostname = hostname
+        self.recalculate = recalculate
         self.port = port
         self.namespace = namespace
         self.engine = None
@@ -47,7 +48,15 @@ class CloseSearch:
                     sql += ", \n description_vector VECTOR(DOUBLE, 384)\n)"
                     conn.execute(text(sql))
                 except:
-                    self.embeddings = True
+                    if self.recalculate:
+                        sql = f"DROP TABLE {self.name}"
+                        conn.execute(text(sql))
+                        sql = f"CREATE TABLE {self.name} (\n"
+                        sql += ",\n".join(f'{e} {s_values[str(t)]}' for e, t in zip(self.columns, self.types))
+                        sql += ", \n description_vector VECTOR(DOUBLE, 384)\n)"
+                        conn.execute(text(sql))
+                    else:
+                        self.embeddings = True
 
     def load_sentence_transformer_model(self):
         self.model = SentenceTransformer('all-MiniLM-L6-v2')
@@ -82,4 +91,5 @@ class CloseSearch:
         results_df = pd.DataFrame(results, columns=list(self.columns) + ["description_vector"])
         pd.set_option('display.max_colwidth', None)  # Easier to read description
         return results_df
+
 
