@@ -19,11 +19,13 @@ class CloseSearch:
         self.columns = self.data.columns
         self.types = self.data.dtypes
         self.textual_var = textual_var
+        self.embeddings = False
         self.connect_to_database()
         self.create_monuments_table()
         self.load_sentence_transformer_model()
-        self.generate_embeddings()
-        self.insert_data_into_database()
+        if self.embeddings == False:
+            self.generate_embeddings()
+            self.insert_data_into_database()
 
     def connect_to_database(self):
         CONNECTION_STRING = f"iris://{self.username}:{self.password}@{self.hostname}:{self.port}/{self.namespace}"
@@ -45,14 +47,7 @@ class CloseSearch:
                     sql += ", \n description_vector VECTOR(DOUBLE, 384)\n)"
                     conn.execute(text(sql))
                 except:
-                    sql = f"""
-                        DROP TABLE {self.name}
-                    """
-                    conn.execute(text(sql))
-                    sql = f"CREATE TABLE {self.name} ("
-                    sql += ",\n".join(f'{e} {s_values[str(t)]}' for e, t in zip(self.columns, self.types))
-                    sql += ", \n description_vector VECTOR(DOUBLE, 384))"
-                    conn.execute(text(sql))
+                    self.embeddings = True
 
     def load_sentence_transformer_model(self):
         self.model = SentenceTransformer('all-MiniLM-L6-v2')
