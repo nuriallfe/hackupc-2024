@@ -32,7 +32,7 @@ def process_user_input(user_input):
     thread.start()
 
 def search_image(user_input):
-    image_search = ImageSearch(folder='../baiges/downloaded_images/*.jpg')
+    image_search = ImageSearch(folder='../data/downloaded_images/*.jpg')
     result = image_search.search_similars(str(user_input))["monument_name"]
 
     print(f"The landmark from the image is {result}")
