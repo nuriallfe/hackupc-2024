@@ -4,6 +4,13 @@ const showdown = require('showdown'); // Import the Showdown library for Markdow
 document.addEventListener('DOMContentLoaded', () => {
     const processButton = document.getElementById('process-button');
     const imageUploadInput = document.getElementById('image-upload');
+    const descriptionEntry = document.getElementById('description-entry');
+
+    document.getElementById('description-entry').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            processButton.click();
+        }
+    });
 
     processButton.addEventListener('click', () => {
         const userInput = document.getElementById('description-entry').value.trim();
@@ -14,6 +21,12 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        // Disable the input and button
+        descriptionEntry.disabled = true;
+        processButton.disabled = true;
+        imageUploadInput.disabled = true;
+        processButton.classList.add('button-disabled');
+
         if (userInput) {
             displayMessage(`<span style="color:#25733f">**You:** ${userInput}</span>`, "user");
             ipcRenderer.send('process-description', userInput);
@@ -21,6 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (imageURL) {
+            displayMessage(`<span style="color:#25733f">**You sent an image** ${imageURL}</span>`, "user");
             ipcRenderer.send('process-image', imageURL);
             imageUploadInput.value = ''; // Clear the file input
         }
@@ -28,6 +42,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     ipcRenderer.on('display-conversation', (event, text, sender) => {
         displayMessage(text, sender);
+        // Re-enable the input and button
+        descriptionEntry.disabled = false;
+        processButton.disabled = false;
+        imageUploadInput.disabled = false;
+        processButton.classList.remove('button-disabled');
     });
 
     function displayMessage(text, sender) {

@@ -28,6 +28,10 @@ body {
     margin-right: 10px;
 }
 
+#description-entry:focus {
+    outline: 2px solid #004d00; /* Green outline for focus */
+}
+
 #process-button {
     padding: 8px 16px;
     background-color: green;
@@ -37,3 +41,42 @@ body {
     cursor: pointer;
     font-size: 16px;
 }
+
+#process-button:hover:not(.button-disabled) {
+    background-color: #006400; /* Darker shade of green for hover */
+}
+
+#process-button:focus {
+    outline: 2px solid #004d00; /* Green outline for focus */
+}
+
+.button-disabled {
+    background-color: grey;
+    cursor: not-allowed;
+}
+
+/* Nueva regla para manejar el hover cuando está deshabilitado */
+#process-button.button-disabled:hover {
+    background-color: green; /* Mantener el color original incluso en hover */
+    cursor: not-allowed; /* Cambiar el cursor para indicar que no es interactuable */
+}
+
+#image-upload {
+    display: none; /* Hide the original file input */
+}
+
+.custom-file-upload {
+    border: 1px solid #ccc;
+    display: inline-block;
+    padding: 6px 12px;
+    cursor: pointer;
+    background-color: #f0f0f0;
+    color: #333;
+    border-radius: 4px;
+    margin-right: 10px;
+}
+
+.custom-file-upload:hover {
+    background-color: #e0e0e0;
+}
+

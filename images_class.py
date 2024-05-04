@@ -10,7 +10,7 @@ import glob
 import re
 
 class ImageSearch:
-    def __init__(self, folder='./baiges/downloaded_images/*.jpg', name = "images", username = 'demo', password = 'demo', hostname='localhost', port='1972', namespace='USER', recalculate=True):
+    def __init__(self, folder='../baiges/downloaded_images/*.jpg', name = "images", username = 'demo', password = 'demo', hostname='localhost', port='1972', namespace='USER', recalculate=False):
         self.name = name
         self.username = username
         self.password = password
@@ -114,5 +114,5 @@ class ImageSearch:
         pd.set_option('display.max_colwidth', None)  # Easier to read description
         return results_df
 
-image_search = ImageSearch()
-print(image_search.search_similars("./baiges/uni.jpg")["monument_name"])
+#image_search = ImageSearch()
+#print(image_search.search_similars("../baiges/uni.jpg")["monument_name"])

@@ -36,6 +36,24 @@ ipcMain.on('process-description', (event, userInput) => {
         const result = data.toString();
         mainWindow.webContents.send('display-conversation', result, 'system');
     });
+    console.log("hola")
+
+    // Handle errors
+    pythonProcess.on('error', (error) => {
+        console.error('Error executing Python script:', error);
+    });
+});
+
+ipcMain.on('process-image', (event, imageURL) => {
+    console.log(imageURL)
+    // Execute Python code
+    const pythonProcess = spawn('python', ['../python_image_script.py', imageURL]);
+
+    // Handle stdout data
+    pythonProcess.stdout.on('data', (data) => {
+        const result = data.toString();
+        mainWindow.webContents.send('display-conversation', result, 'system');
+    });
 
     // Handle errors
     pythonProcess.on('error', (error) => {

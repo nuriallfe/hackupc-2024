@@ -17,6 +17,13 @@ sys.stdout.reconfigure(encoding='utf-8')
 
 # Assume other necessary imports and class definitions (like MonumentsSearch and CloseSearch) are done here
 
+monuments_search = MonumentsSearch(
+    data_file_path="../data/city.csv",
+    landmark_column="city",
+    wiki_content_column="wiki_content",
+    landmarks_directory="../data/texts",
+)
+
 # Initialize MonumentsSearch
 monuments_search = MonumentsSearch(
     data_file_path="../data/data.csv",
@@ -49,7 +56,7 @@ def search_landmarks(user_input):
         try:
             with open(f"../baiges/downloaded_images/{filename}", "rb") as img_file:
                 encoded_img = base64.b64encode(img_file.read()).decode('utf-8')
-            result_text += f"\n<br><div style='text-align: center'><img src='data:image/jpeg;base64,{encoded_img}' width='300'><\div><br>"
+            result_text += f"\n<br><div style='text-align: center'><img src='data:image/jpeg;base64,{encoded_img}' width='300'></div><br>"
         except Exception as exc:
             pass
     
