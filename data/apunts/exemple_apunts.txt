@@ -1,0 +1,57 @@
+# Overview
+
+**RAG:** tècnica per basar les respostes d’un LLM en informació externa validada
+
+**Integració contextual:** una aplicació de RAG carregal el context en una base de dades, que després carrega per insertar en un prompt
+
+Diversos passos:
+
+- Obtenir el contingut textual dels documents (per realitzar cerques per similitud o paraules clau)
+- També els elements (per filtrar i chunkitzar)
+- Metadata: nom, tipus…
+
+El preprocessament és complicat perquè documents diferents tenen coses diferents per elements (visuals, markdown…) → s’han d’estandaritzar
+
+Formats diferents s’hauran d’extreure de formes diferents 
+
+# Normalitzant documents
+
+Els documents provenen en una gran varietat de formats. El primer pas és convertir-los en un format comú, que identifica elements comuns. Permet que es preprocessin de la mateixa manera, i redueix el cost de processat
+
+### Serialització
+
+Hi ha diverses opcions, una són els JSON.
+
+Diversos tipus de documents
+
+### Pàgina HTML
+
+Permet integrar dades d’internet. Cal entendre l’estructura, observant les etiquetes (h1 títols, p text). Caldrà analitzar els elements per extreure i organitzar-lo en formats estructurats.
+
+### Power point
+
+Internament, la representació és un XML o sigui que no és gaire diferent a una web. Hi ha llibreries com pptx.
+
+### PDF (amb taules)
+
+Més complicats, ja que caldrà observar elements visuals. S’utilitza OCR i Transformers molts cops per millorar
+
+## Metadata
+
+Detalls del document, origen, estructural…
+
+### Cerca semàntica
+
+Utilitzes una base de dades de vectors (els documents), i busques contingut semànticament similar. Utilitza embeddings (convertir text a vectors)
+
+A vegades no serveix pel RAG: masses matchs, només vols la més recent, perds informació important → s’usa **cerca híbrida**: combines la cerca semàntica amb filtrat i paraules clau.
+
+Per la base de dades dels vectors → chromadb
+
+Pots, a partir del metadata del document, buscar per exemple informació d’un capítol concret
+
+### Chunking
+
+A partir d’un text gran, partir-lo en parts més petites que pots passar a una base de dades de vectors (molts cops no pots passar tot el document. Depenent dels chunks es retornaran coses diferents.
+
+Es pot partir per caràcters, tokens… en general de mida similar. Amb el metadata, pot partir de manera més intel·ligent, que tingui més sentit. Per exemple, crear nous chunks cada cop que es troba un títol.
