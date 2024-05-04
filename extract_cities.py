@@ -4,10 +4,10 @@ import pandas as pd
 import os
 from city import CreateCityDescriptions
 
-path = './Data/1000Cities.csv'
+path = './data/1000Cities.csv'
 data = pd.read_csv(path)
 
-cities_txt_path = './Data/city_names.txt'
+cities_txt_path = './data/city_names.txt'
 
 with open(cities_txt_path, 'w', encoding='utf-8') as file:
     for city in data['Name of City']:
