@@ -262,8 +262,8 @@ class CreateDataLandmarks:
 
 		self.df = pd.DataFrame(data)
 
-		# Remove lines with None values
-		self.df = self.df.drop(self.df[self.df.isnull()].index)
+		# Remove lines with python None values
+		self.df = self.df.dropna()
 
 		self.landmarks = self.df['landmark'].tolist()
 		self.coordinates = {'latitude': self.df['latitude'].tolist(), 'longitude': self.df['longitude'].tolist()}
