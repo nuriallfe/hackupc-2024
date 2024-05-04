@@ -106,13 +106,3 @@ monuments_search = MonumentsSearch(
     wiki_content_column="wiki_content",
     landmarks_directory="./data/monuments",
 )
-
-
-response = monuments_search.query("Give me all the information about the Van Gogh Museum")
-print(textwrap.fill(str(response), 100))
-
-response = monuments_search.query("What happened in the mid 1980s?")
-print(textwrap.fill(str(response), 100))
-
-response = monuments_search.query("Create questions, and answers, based on the info you know")
-print(textwrap.fill(str(response), 100))
