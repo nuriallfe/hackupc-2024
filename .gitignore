@@ -5,3 +5,4 @@ data/monuments
 images
 *.env
 iris-vector-search
+node_modules

@@ -56,7 +56,6 @@ class MonumentsSearch:
         username = 'demo'
         password = 'demo' 
         hostname = os.getenv('IRIS_HOSTNAME', 'localhost')
-        print(hostname)
         port = '1972' 
         namespace = 'USER'
         CONNECTION_STRING = f"iris://{username}:{password}@{hostname}:{port}/{namespace}"

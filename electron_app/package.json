@@ -1,0 +1,16 @@
+{
+  "name": "your-electron-app",
+  "version": "1.0.0",
+  "description": "Where would you like to go? - Electron App",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "keywords": [],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "electron": "^30.0.2",
+    "showdown": "^2.1.0"
+  }
+}
