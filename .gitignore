@@ -1,2 +1,6 @@
 .venv
+<<<<<<< HEAD
 __pycache__
+=======
+clean_data
+>>>>>>> d01203e9472c67bbd6cecd1cc93b6f75b6584958
