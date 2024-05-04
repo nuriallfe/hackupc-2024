@@ -14,6 +14,8 @@ class MonumentSearch:
         self.engine = None
         self.model = None
         self.data = pd.read_csv(file)
+        self.data.columns = self.data.columns.str.replace(' ', '_')
+        self.data.columns = self.data.columns.str.replace('/', '_')
         self.columns = self.data.columns
         self.types = self.data.dtypes
         self.textual_var = textual_var
@@ -32,7 +34,8 @@ class MonumentSearch:
             "float64": "DOUBLE",
             "object": "VARCHAR(20000)",
             "O": "VARCHAR(20000)",
-            "int32": "INT"
+            "int32": "INT",
+            "int64": "INT"
         }
         with self.engine.connect() as conn:
             with conn.begin():
