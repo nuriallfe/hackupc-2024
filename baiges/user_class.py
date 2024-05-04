@@ -59,3 +59,35 @@ class UserManager:
                     INSERT INTO users (user_id, preferences, visited_places)
                     VALUES (:user_id, :preferences, :visited_places)
                 """), {'user_id': user_id, 'preferences': preferences, 'visited_places': visited_places})
+
+    def get_user_info(self, user_id):
+        """
+        Retrieve user information from the database.
+        """
+        with self.engine.connect() as conn:
+            result = conn.execute(text(f"SELECT * FROM users WHERE user_id = :user_id"), {'user_id': user_id})
+            return result.fetchone()
+        
+    def get_all_users(self):
+        """
+        Retrieve information for all users from the database.
+        """
+        with self.engine.connect() as conn:
+            result = conn.execute(text("SELECT * FROM users"))
+            return result.fetchall()
+        
+    def delete_user(self, user_id):
+        """
+        Delete a user from the database.
+        """
+        with self.engine.connect() as conn:
+            with conn.begin():
+                conn.execute(text(f"DELETE FROM users WHERE user_id = :user_id"), {'user_id': user_id})
+
+    def delete_all_users(self):
+        """
+        Delete all users from the database.
+        """
+        with self.engine.connect() as conn:
+            with conn.begin():
+                conn.execute(text("DELETE FROM users"))
