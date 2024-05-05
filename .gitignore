@@ -6,3 +6,5 @@ images
 *.env
 iris-vector-search
 node_modules
+electron_app/cache
+cache
