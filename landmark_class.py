@@ -7,18 +7,21 @@ import numpy as np
 from dotenv import load_dotenv
 
 class CreateDataLandmarks:
-	def __init__(self, landmarks_file: str, save_dir: str, from_csv: str = ''):
+	def __init__(self, landmarks_file: str, save_dir: str, from_csv: str = '', images_from = 'flickr'):
 		"""
 		Parameters
 		----------
 		landmarks_file : str
-			The path to the file containing the landmarks.
+			The file containing the landmarks.
 
 		save_dir : str
-			The directory to save the dataset.
+			The directory to save the data.
 
-		from_csv : str
-			The path to the csv file containing the precalculated dataset.
+		from_csv : str	
+			The csv file containing the data.
+
+		images_from : str
+			The source of the images. Either 'flickr' or 'wiki'.
 		"""
 		self.landmarks_file: str = landmarks_file
 		self.from_csv: str = from_csv
@@ -31,8 +34,20 @@ class CreateDataLandmarks:
 			self.coordinates: dict = self.get_coordinates()
 
 			self.save_dataset()
+		else:
+			self.df = pd.read_csv(from_csv)
+			self.landmarks = self.df['landmark'].tolist()
+			self.cities = self.df['city'].tolist()
+			self.countries = self.df['country'].tolist()
+			self.totals = [f"{landmark}, {city}, {country}" for landmark, city, country in zip(self.landmarks, self.cities, self.countries)]
+			self.coordinates = {'latitude': self.df['latitude'].tolist(), 'longitude': self.df['longitude'].tolist()}
+			self.wikipedia_data = {total: {'title': title, 'content': content} for total, title, content in zip(self.totals, self.df['wiki_title'].tolist(), self.df['wiki_content'].tolist())}
 		
-		self.download_images()
+		if images_from == 'flickr':
+			self.download_images()
+		elif images_from == 'wiki':
+			self.get_wiki_images()
+
 		self.save_texts()
 
 	def get_data_landmarks(self):
@@ -115,6 +130,109 @@ class CreateDataLandmarks:
 			return search_results[0]['title']
 		else:
 			return None
+		
+	def get_wiki_images(self):
+		
+		for i, total in enumerate(self.totals):
+			title = self.search_wikipedia(total)
+			if title is None:
+				print(f"No Wikipedia page found for {total}.")
+				continue
+			
+			PARAMS = {
+				'action': "query",
+				'format': "json",
+				'titles': title,
+				'prop': 'pageimages',
+				'pithumbsize': 500
+			}
+			response = requests.get(self.URL, params=PARAMS)
+			data = response.json()
+			pages = data['query']['pages']
+			result = None
+			for page in pages.values():
+				if 'thumbnail' in page:
+					image_url = page['thumbnail']['source']
+					result = image_url
+
+			if result is not None:
+				directory = f"{self.save_dir}/downloaded_wiki_images"
+
+				if not os.path.exists(directory):
+					os.makedirs(directory)
+
+				filename = f'{total.replace(" ", "_").replace(".", "").replace(",", "")}.jpg'
+				try:
+					response = requests.get(result)
+					with open(os.path.join(directory, filename), 'wb') as f:
+						f.write(response.content)
+						print(f"Downloaded image for {total}.")
+				except requests.RequestException as e:
+					print(f"Error downloading image {filename}: {e}")
+			else:
+				print(f"No image found for {total} (Wiki page found: {title}). Trying with flickr.")
+
+				def fetch_images(text_search, num_images=1):
+					url = 'https://api.flickr.com/services/rest/'
+					images = []
+					page = 1
+
+					while len(images) < num_images:
+						params = {
+							'method': 'flickr.photos.search',
+							'api_key': self.flickr_api_key,
+							'text': text_search,
+							'sort': 'relevance',
+							'media': 'photos',
+							'safe_search': 1,
+							'extras': 'url_l',  # 'url_l' is more likely to be available
+							'format': 'json',
+							'nojsoncallback': 1,
+							'per_page': 100,  # Fetch more photos per request
+							'page': page
+						}
+
+						try:
+							response = requests.get(url, params=params)
+							response.raise_for_status()
+							photos = response.json()['photos']['photo']
+							for photo in photos:
+								if 'url_l' in photo and len(images) < num_images:
+									images.append(photo['url_l'])
+							page += 1
+						except requests.RequestException as e:
+							print(f"Error fetching data: {e}")
+							break
+
+					return images
+				
+				# Fetch images for each landmark
+
+				# Load the API key from .env
+				load_dotenv()
+
+				self.flickr_api_key = os.environ.get('FLICKR_API_KEY')
+
+				directory = f"{self.save_dir}/downloaded_images"
+
+				if not os.path.exists(directory):
+							os.makedirs(directory)
+
+				index = self.totals.index(total)
+				landmark = self.landmarks[index]
+				images = fetch_images(landmark, num_images=1)
+				image = images[0] if images else None
+				
+				if image is not None:
+					filename = f'{self.totals[i].replace(" ", "_").replace(".", "").replace(",", "")}.jpg'  # Replace spaces with underscores and append the index
+					try:
+						response = requests.get(image)
+						response.raise_for_status()
+						with open(os.path.join(directory, filename), 'wb') as f:
+							f.write(response.content)
+							print(f"Downloaded image for {total}.")
+					except requests.RequestException as e:
+						print(f"Error downloading image {filename}: {e}")
 
 	def get_wikipedia_content(self, title: str):
 		"""
@@ -171,13 +289,6 @@ class CreateDataLandmarks:
 		"""
 		Download images from Flickr API based on the landmarks.
 		"""
-
-		if self.from_csv:
-			self.df = pd.read_csv(self.from_csv)
-			self.landmarks = self.df['landmark'].tolist()
-			self.cities = self.df['city'].tolist()
-			self.countries = self.df['country'].tolist()
-			self.totals = [f"{landmark}, {city}, {country}" for landmark, city, country in zip(self.landmarks, self.cities, self.countries)]
 
 		def fetch_images(text_search, num_images=10):
 			"""
