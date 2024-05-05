@@ -1,29 +1,21 @@
-# hackupc-2024
+# PaCaBaNu
 
+## Project Overview
+The aim of this project is to make use of embeddings, vectors, and artificial intelligence to add value to travelers.  By utilizing various types of embeddings with the assistance of a prepared database tailored to handle them, we aim to demonstrate how different embeddings can be effectively used. Our goal is to enhance the user experience for travelers by providing intelligent recommendations, personalized insights, and efficient search capabilities based on their preferences.
 
-import math
+## Setup Instructions
+### Prerequisites
+- Python 3.x
+- InterSystem IRIS
+- Electron 
 
-def haversine_distance(lat1, lon1, lat2, lon2):
-    # Convert latitude and longitude from degrees to radians
-    lat1, lon1, lat2, lon2 = map(math.radians, [lat1, lon1, lat2, lon2])
+### Uses
+The project provides a graphical interface for interaction. The interaction can take two forms:
+1. Destination Recommendation:Users are prompted to input their preferences or ideas for a destination, such as preferred activities, climate, cultural interests. The program suggests a city along with its potential landmarks and attractions that match the given criteria. It also returns a map of the city. 
+2. Destination Recommendation: Users can provide an image, and the program will suggest a city that shares similar characteristics by analyzing the image. 
 
-    # Haversine formula
-    dlat = lat2 - lat1
-    dlon = lon2 - lon1
-    a = math.sin(dlat/2)**2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon/2)**2
-    c = 2 * math.asin(math.sqrt(a))
+### Execution
+1. Install the necessary libraries: Ensure that you have installed all the required libraries and dependencies for the project.
+2. Set up Docker and navigate to the electron_app folder: Configure Docker according to the project's specifications, and then navigate to the electron_app folder within your project directory using the command line or terminal.
+3. Run npm run start: Execute the program npm run start to start the execution. This command will initiate the startup process for the Electron application, allowing you to interact with it through the graphical user interface.
 
-    # Radius of Earth in kilometers. Use 3956 for miles
-    r = 6371
-
-    # Calculate the result
-    return c * r
-
-# Example usage
-latitude1 = 52.2296756
-longitude1 = 21.0122287
-latitude2 = 41.8919300
-longitude2 = 12.5113300
-
-distance = haversine_distance(latitude1, longitude1, latitude2, longitude2)
-print(f"The distance between the two points is {distance:.2f} kilometers.")
