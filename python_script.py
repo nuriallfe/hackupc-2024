@@ -18,6 +18,13 @@ sys.stdout.reconfigure(encoding='utf-8')
 import osmnx
 
 # Assume other necessary imports and class definitions (like MonumentsSearch and CloseSearch) are done here
+cities_search = MonumentsSearch(
+    data_file_path="../data/city.csv",
+    landmark_column="city",
+    wiki_content_column="wiki_content",
+    landmarks_directory="../data/city_texts",
+    recalculate = True
+)
 
 # Initialize MonumentsSearch
 monuments_search = MonumentsSearch(
@@ -39,7 +46,6 @@ def process_user_input(user_input):
     thread.start()
 
 def search_landmarks(user_input):
-
     city_searcher = CloseSearch(file="../data/city.csv", name="cities", textual_var="wiki_content")
 
     results = city_searcher.search_similars(user_input, number=1)
@@ -48,6 +54,8 @@ def search_landmarks(user_input):
     longitud = results["longitude"][0]
     text = f"# {ciutat} \n\n "
     result_text = text
+
+    result_text += str(cities_search.query(f"Create a brew (2-3 lines) description about the city of {ciutat}")) + "\n"
 
     monu_searcher = CloseSearch(file="../data/data.csv", name="monuments", textual_var="wiki_content",add_distances=True, lat1= latitud, long1 =longitud,  recalculate=True)
 
