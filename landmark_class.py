@@ -3,6 +3,7 @@ import geopy
 import pandas as pd
 import time
 import os
+import numpy as np
 from dotenv import load_dotenv
 
 class CreateDataLandmarks:
@@ -23,14 +24,12 @@ class CreateDataLandmarks:
 		self.from_csv: str = from_csv
 		self.save_dir: str = save_dir.removesuffix('/')
 		self.URL: str = "https://en.wikipedia.org/w/api.php"
-
-		self.landmarks_with_none = []
 		
 		self.landmarks: list = self.get_data_landmarks()
 
 		if not from_csv:
-			self.coordinates: dict = self.get_coordinates()
 			self.wikipedia_data: dict = self.get_data_wikipedia()
+			self.coordinates: dict = self.get_coordinates()
 
 			self.save_dataset()
 		
@@ -53,7 +52,8 @@ class CreateDataLandmarks:
 			with open(self.landmarks_file, 'r', encoding='utf-8') as file:
 				landmarks = file.read().splitlines()
 				landmarks = [landmark.strip() for landmark in landmarks if landmark.strip()]
-		return landmarks
+
+		return list(set(landmarks))
 	
 	def get_coordinates(self):
 		"""
@@ -64,14 +64,23 @@ class CreateDataLandmarks:
 		dict
 			The dictionary of the locations.
 		"""
-		geolocator = geopy.Nominatim(user_agent="landmarks")
+		geolocator = geopy.Nominatim(user_agent="landmarks", timeout=10)
 		coordinates = {'latitude': [], 'longitude': []}
 		for landmark in self.landmarks:
 			location = geolocator.geocode(landmark)
 			if location is None:
-				print(f"Location not found for {landmark}.")
-				coordinates['latitude'].append(None)
-				coordinates['longitude'].append(None)
+				# Try getting the location from the Wikipedia data
+				new_landmark = self.wikipedia_data[landmark]['title']
+				if new_landmark is not None:
+					location = geolocator.geocode(new_landmark)
+				
+				if location is None:
+					print(f"Location not found for {landmark}.")
+					coordinates['latitude'].append(None)
+					coordinates['longitude'].append(None)
+				else:
+					coordinates['latitude'].append(location.latitude)
+					coordinates['longitude'].append(location.longitude)
 			else:
 				coordinates['latitude'].append(location.latitude)
 				coordinates['longitude'].append(location.longitude)
@@ -150,12 +159,10 @@ class CreateDataLandmarks:
 		wikipedia_data = {}
 		for landmark in self.landmarks:
 			searched_title = self.search_wikipedia(landmark)
-			if searched_title:
-				content = self.get_wikipedia_content(searched_title)
-				wikipedia_data[landmark] = {'content': content, 'title': searched_title}
+			content = self.get_wikipedia_content(searched_title) if searched_title is not None else None
 			
-			time.sleep(0.01) # Avoid hitting the API too hard
-
+			wikipedia_data[landmark] = {'content': content, 'title': searched_title}
+			
 		return wikipedia_data
 
 	def download_images(self):
@@ -224,7 +231,7 @@ class CreateDataLandmarks:
 			images = fetch_images(landmark, num_images=3)
 
 		if not os.path.exists(directory):
-			os.makedirs(self.save_dir)
+			os.makedirs(directory)
 
 		for i, image_url in enumerate(images):
 			filename = f'{self.landmarks[i].replace(" ", "_").replace(".", "").replace(",", "")}_{i+1}.jpg'  # Replace spaces with underscores and append the index
@@ -276,8 +283,13 @@ class CreateDataLandmarks:
 
 		self.df = pd.DataFrame(data)
 
+		rows1 = self.df.shape[0]
+
 		# Remove lines with python None values
 		self.df.dropna(inplace=True)
+
+		rows2 = self.df.shape[0]
+		print(f"Removed {rows1 - rows2} rows with missing data.")
 
 		self.landmarks = self.df['landmark'].tolist()
 		self.coordinates = {'latitude': self.df['latitude'].tolist(), 'longitude': self.df['longitude'].tolist()}
