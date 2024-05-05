@@ -6,36 +6,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Where would you like to go?</title>
     <link rel="stylesheet" href="styles.css">
-    <style>
-        /* Style for the file input */
-        #image-upload {
-            display: none; /* Hide the original file input */
-        }
-
-        .custom-file-upload {
-            border: 1px solid #ccc;
-            display: inline-block;
-            padding: 6px 12px;
-            cursor: pointer;
-            background-color: #f0f0f0;
-            color: #333;
-            border-radius: 4px;
-            margin-right: 10px;
-        }
-
-        .custom-file-upload:hover {
-            background-color: #e0e0e0;
-        }
-    </style>
 </head>
 <body>
-    <div id="chat-display"></div>
-    <div id="input-container">
-        <input type="text" id="description-entry" placeholder="Enter a description...">
-        <!-- Custom file upload button -->
-        <label for="image-upload" class="custom-file-upload">Choose Image</label>
-        <input type="file" id="image-upload" accept="image/*">
-        <button id="process-button">Send</button>
+    <div id="wrapper">
+        <div id="content">
+            <div id="chat-display"></div>
+            <div id="input-container">
+                <input type="text" id="description-entry" placeholder="Enter a description...">
+                <!-- Custom file upload button -->
+                <label for="image-upload" class="custom-file-upload">Choose Image</label>
+                <input type="file" id="image-upload" accept="image/*">
+                <button id="process-button">Send</button>
+            </div>
+        </div>
+        <div id="sidebar">
+            <!-- Your content for the right column goes here -->
+        </div>
     </div>
     <script src="./renderer.js"></script>
 </body>

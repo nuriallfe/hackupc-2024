@@ -5,6 +5,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const processButton = document.getElementById('process-button');
     const imageUploadInput = document.getElementById('image-upload');
     const descriptionEntry = document.getElementById('description-entry');
+    const sidebar = document.getElementById('sidebar');
+    let generatedImageElement = null; // Variable to hold the reference to the generated image element
 
     document.getElementById('description-entry').addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
@@ -40,13 +42,24 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    ipcRenderer.on('display-conversation', (event, text, sender) => {
+    ipcRenderer.on('display-conversation', (event, text, sender, imageUrl) => {
         displayMessage(text, sender);
         // Re-enable the input and button
         descriptionEntry.disabled = false;
         processButton.disabled = false;
         imageUploadInput.disabled = false;
         processButton.classList.remove('button-disabled');
+
+        // Display or update generated image in the sidebar
+        if (imageUrl) {
+            if (generatedImageElement) {
+                sidebar.removeChild(generatedImageElement);
+            } 
+            generatedImageElement = document.createElement('img');
+            generatedImageElement.src = `${imageUrl}?_=${new Date().getTime()}`;
+            sidebar.appendChild(generatedImageElement);
+            
+        }
     });
 
     function displayMessage(text, sender) {
