@@ -3,9 +3,10 @@ const showdown = require('showdown'); // Import the Showdown library for Markdow
 
 document.addEventListener('DOMContentLoaded', () => {
     const processButton = document.getElementById('process-button');
+    const downloadButton = document.getElementById('download-button');
     const imageUploadInput = document.getElementById('image-upload');
     const descriptionEntry = document.getElementById('description-entry');
-    const sidebar = document.getElementById('sidebar');
+    const imageDisplay = document.getElementById('image-display');
     let generatedImageElement = null; // Variable to hold the reference to the generated image element
 
     document.getElementById('description-entry').addEventListener('keypress', (e) => {
@@ -53,11 +54,11 @@ document.addEventListener('DOMContentLoaded', () => {
         // Display or update generated image in the sidebar
         if (imageUrl) {
             if (generatedImageElement) {
-                sidebar.removeChild(generatedImageElement);
+                imageDisplay.removeChild(generatedImageElement);
             } 
             generatedImageElement = document.createElement('img');
             generatedImageElement.src = `${imageUrl}?_=${new Date().getTime()}`;
-            sidebar.appendChild(generatedImageElement);
+            imageDisplay.appendChild(generatedImageElement);
             
         }
     });
@@ -75,5 +76,35 @@ document.addEventListener('DOMContentLoaded', () => {
         message.innerHTML = `<span style="font-family: Helvetica">${htmlText}</span>`;
         chatDisplay.appendChild(message);
         chatDisplay.scrollTop = chatDisplay.scrollHeight; // Scroll to bottom
+    }
+    downloadButton.addEventListener('click', () => {
+        downloadConversation();
+    });
+
+    // Function to download conversation
+    function downloadConversation() {
+        const chatDisplay = document.getElementById('chat-display');
+        const messages = chatDisplay.querySelectorAll('.user-message, .system-message');
+        let conversationText = '';
+
+        // Iterate through each message and concatenate the text
+        messages.forEach(message => {
+            conversationText += message.innerText + '\n';
+        });
+
+        // Create a blob with the text content
+        const blob = new Blob([conversationText], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+
+        // Create a temporary link element and trigger download
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'conversation.md';
+        document.body.appendChild(link);
+        link.click();
+
+        // Clean up
+        URL.revokeObjectURL(url);
+        document.body.removeChild(link);
     }
 });
