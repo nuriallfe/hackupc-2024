@@ -89,11 +89,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Iterate through each message and concatenate the text
         messages.forEach(message => {
-            conversationText += message.innerText + '\n';
+            conversationText += message.innerHTML + '\n';
         });
 
         // Create a blob with the text content
-        const blob = new Blob([conversationText], { type: 'text/plain' });
+        const blob = new Blob([conversationText], { type: 'text/html' });
         const url = URL.createObjectURL(blob);
 
         // Create a temporary link element and trigger download
