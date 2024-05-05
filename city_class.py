@@ -2,6 +2,7 @@ import geopy
 import pandas as pd
 import time
 import os
+import numpy as np
 import requests
 
 class CreateDataCities:
@@ -51,8 +52,16 @@ class CreateDataCities:
                 tuples = file.read().splitlines()
                 cities = [city.split(',')[0].strip() for city in tuples]
                 countries = [city.split(',')[1].strip() for city in tuples]
+        
+        pairs = [(ci, co) for ci, co in zip(cities, countries)]
+        pairs = set(pairs)
+        pairs = list(pairs)
+
+        cities = [t[0] for t in pairs]
+        countries = [t[1] for t in pairs]
+
         return cities, countries
-    
+
     def get_coordinates(self):
         """
         Get the coordinates of the cities.
@@ -62,7 +71,7 @@ class CreateDataCities:
         dict
             The dictionary of the locations.
         """
-        geolocator = geopy.Nominatim(user_agent="cities")
+        geolocator = geopy.Nominatim(user_agent="cities", timeout=10)
         coordinates = {'latitude': [], 'longitude': []}
         for city, country in zip(self.cities, self.countries):
             location = geolocator.geocode(f"{city}, {country}")
