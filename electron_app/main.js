@@ -34,7 +34,7 @@ ipcMain.on('process-description', (event, userInput) => {
     // Handle stdout data
     pythonProcess.stdout.on('data', (data) => {
         const result = data.toString();
-        mainWindow.webContents.send('display-conversation', result, 'system');
+        mainWindow.webContents.send('display-conversation', result, 'system', '../data/generatedmap.png');
     });
     console.log("hola")
 

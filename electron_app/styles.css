@@ -80,3 +80,28 @@ body {
     background-color: #e0e0e0;
 }
 
+
+
+#wrapper {
+    display: flex;
+}
+
+#content {
+    flex: 1;
+}
+
+#sidebar {
+    flex: 0 0 30%; /* Adjust the width of the sidebar as needed */
+    background-color: #f0f0f0; /* Background color of the sidebar */
+    /* Add any other styles you want for the sidebar */
+}
+
+#sidebar img {
+    padding-top: 1vh;
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    margin: auto;
+    display: block;
+}
