@@ -1,4 +1,4 @@
-# PaCaBiNu
+# PaCaBaNu
 
 ## Project Overview
 The aim of this project is to make use of embeddings, vectors, and artificial intelligence to add value to travelers.  By utilizing various types of embeddings with the assistance of a prepared database tailored to handle them, we aim to demonstrate how different embeddings can be effectively used. Our goal is to enhance the user experience for travelers by providing intelligent recommendations, personalized insights, and efficient search capabilities based on their preferences.
