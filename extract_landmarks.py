@@ -1,4 +1,4 @@
-from create_data_class import CreateDataLandmarks
+from landmark_class import CreateDataLandmarks
 
 landmarks_file = "./data/emblematic_european_sites.inp"
 save_dir = "./data"

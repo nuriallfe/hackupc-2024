@@ -3,6 +3,7 @@ import geopy
 import pandas as pd
 import time
 import os
+from dotenv import load_dotenv
 
 class CreateDataLandmarks:
 	def __init__(self, landmarks_file: str, save_dir: str, from_csv: str = ''):
@@ -105,36 +106,6 @@ class CreateDataLandmarks:
 		else:
 			return None
 
-	def get_wikipedia_image(self, landmark: str):
-		"""
-		Get the main image from a Wikipedia page by title.
-
-		Parameters
-		----------
-		landmark : str
-			The landmark to search for.
-
-		Returns
-		-------
-		str
-			The URL of the image.
-		"""
-		PARAMS = {
-			'action': "query",
-			'format': "json",
-			'titles': landmark,
-			'prop': 'pageimages',
-			'pithumbsize': 500
-		}
-		response = requests.get(self.URL, params=PARAMS)
-		data = response.json()
-		pages = data['query']['pages']
-		for page in pages.values():
-			if 'thumbnail' in page:
-				image_url = page['thumbnail']['source']
-				return image_url	
-		return None
-
 	def get_wikipedia_content(self, landmark: str):
 		"""
 		Get the main content of a Wikipedia page by title.
@@ -180,9 +151,8 @@ class CreateDataLandmarks:
 		for landmark in self.landmarks:
 			searched_title = self.search_wikipedia(landmark)
 			if searched_title:
-				image_url = self.get_wikipedia_image(searched_title)
 				content = self.get_wikipedia_content(searched_title)
-				wikipedia_data[landmark] = {'image_url': image_url, 'content': content, 'title': searched_title}
+				wikipedia_data[landmark] = {'content': content, 'title': searched_title}
 			
 			time.sleep(0.01) # Avoid hitting the API too hard
 
@@ -190,40 +160,85 @@ class CreateDataLandmarks:
 
 	def download_images(self):
 		"""
-		Downloads each image from a list of image URLs into a specified directory.
+		Download images from Flickr API based on the landmarks.
 		"""
-		dir_name = f"{self.save_dir}/images"
-		if not os.path.exists(dir_name):
-			os.makedirs(dir_name)  # Create save directory if it doesn't exist
-
-		headers = {
-			'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36',
-			'Referer': 'https://www.google.com'
-		}
 
 		if self.from_csv:
 			self.df = pd.read_csv(self.from_csv)
-			image_urls = self.df['image_url'].tolist()
-		else:
-			image_urls = [self.wikipedia_data[landmark]['image_url'] for landmark in self.landmarks]
+			self.landmarks = self.df['landmark'].tolist()
 
-		error_count = 0
-		for i, url in enumerate(image_urls):
+		def fetch_images(text_search, num_images=10):
+			"""
+			Fetches images from Flickr API based on a text search, ensuring it gathers a specified number of valid image URLs.
+
+			Args:
+				text_search (str): Text to search for
+				num_images (int): Desired number of images to fetch
+
+			Returns:
+				list: List of image URLs
+			"""
+			url = 'https://api.flickr.com/services/rest/'
+			images = []
+			page = 1
+
+			while len(images) < num_images:
+				params = {
+					'method': 'flickr.photos.search',
+					'api_key': self.flickr_api_key,
+					'text': text_search,
+					'sort': 'relevance',
+					'media': 'photos',
+					'safe_search': 1,
+					'extras': 'url_l',  # 'url_l' is more likely to be available
+					'format': 'json',
+					'nojsoncallback': 1,
+					'per_page': 100,  # Fetch more photos per request
+					'page': page
+				}
+
+				try:
+					response = requests.get(url, params=params)
+					response.raise_for_status()
+					photos = response.json()['photos']['photo']
+					for photo in photos:
+						if 'url_l' in photo and len(images) < num_images:
+							images.append(photo['url_l'])
+					page += 1
+				except requests.RequestException as e:
+					print(f"Error fetching data: {e}")
+					break
+
+			return images
+		
+		# Fetch images for each landmark
+
+		# Load the API key from .env
+		load_dotenv()
+
+		self.flickr_api_key = os.environ.get('FLICKR_API_KEY')
+
+		directory = f"{self.save_dir}/downloaded_images"
+
+		for i, landmark in enumerate(self.landmarks):
+			images = fetch_images(landmark, num_images=3)
+
+		if not os.path.exists(directory):
+			os.makedirs(self.save_dir)
+
+		for i, image_url in enumerate(images):
+			filename = f'{self.landmarks[i].replace(" ", "_").replace(".", "").replace(",", "")}_{i+1}.jpg'  # Replace spaces with underscores and append the index
 			try:
-				response = requests.get(url, stream=True, headers=headers)
-				if response.status_code == 200:
-					# Construct a path to save the image
-					file_path = os.path.join(dir_name, self.landmarks[i].replace(' ', '_').replace('.', '').replace(',', '') + '.jpg')
-
-					# Write the image to a file
-					with open(file_path, 'wb') as f:
-						f.write(response.content)
-				else:
-					error_count += 1
+				response = requests.get(image_url)
+				response.raise_for_status()
+				with open(os.path.join(directory, filename), 'wb') as f:
+					f.write(response.content)
 			except requests.RequestException as e:
-				print(f"Error downloading image from {url}: {e}")
+				print(f"Error downloading image {filename}: {e}")
 
-		print(f"{error_count} images could not be downloaded.")
+		# Calculate how many images were downloaded
+		downloaded_images = os.listdir('downloaded_images')
+		print(f"Downloaded {len(downloaded_images)} images.")
 
 	def save_texts(self):
 		"""
@@ -252,23 +267,21 @@ class CreateDataLandmarks:
 		Save the dataset to a csv file.
 		"""
 		data = {
-			'landmark': [landmark for landmark in self.landmarks],
-			'latitude': [self.coordinates['latitude'][i] for i, landmark in enumerate(self.landmarks)],
-			'longitude': [self.coordinates['longitude'][i] for i, landmark in enumerate(self.landmarks)],
+			'landmark': self.landmarks,
+			'latitude': self.coordinates['latitude'],
+			'longitude': self.coordinates['longitude'],
 			'wiki_title': [self.wikipedia_data[landmark]['title'] for landmark in self.landmarks],
-			'image_url': [self.wikipedia_data[landmark]['image_url'] for landmark in self.landmarks],
 			'wiki_content': [self.wikipedia_data[landmark]['content'] for landmark in self.landmarks]
 		}
 
 		self.df = pd.DataFrame(data)
 
 		# Remove lines with python None values
-		self.df = self.df.dropna()
+		self.df.dropna(inplace=True)
 
 		self.landmarks = self.df['landmark'].tolist()
 		self.coordinates = {'latitude': self.df['latitude'].tolist(), 'longitude': self.df['longitude'].tolist()}
-		self.wikipedia_data = {landmark: {'image_url': self.df[self.df['landmark'] == landmark]['image_url'].values[0],
-										  'content': self.df[self.df['landmark'] == landmark]['wiki_content'].values[0],
+		self.wikipedia_data = {landmark: {'content': self.df[self.df['landmark'] == landmark]['wiki_content'].values[0],
 										  'title': self.df[self.df['landmark'] == landmark]['wiki_title'].values[0]}
 							  for landmark in self.landmarks}
 	
