@@ -19,7 +19,7 @@ class ImageSearch:
         self.recalculate = recalculate
         self.namespace = namespace
         self.engine = None
-        self.model = models.resnet18(pretrained=True)
+        self.model = models.resnet152(pretrained=True)
         self.model.eval()
         self.paths = glob.glob(folder)
         self.embeddings = False

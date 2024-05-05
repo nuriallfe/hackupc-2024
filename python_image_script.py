@@ -36,7 +36,7 @@ def process_user_input(user_input):
     thread.start()
 
 def search_image(user_input):
-    image_search = ImageSearch(folder='../data/city_images/*.jpg', name="cities", recalculate=True)
+    image_search = ImageSearch(folder='../data/city_images/*.jpg', name="cities")
     result = image_search.search_similars(str(user_input))
     ciutat = result["monument_name"][0]
     text = f"# {ciutat} \n\n "
@@ -44,6 +44,7 @@ def search_image(user_input):
 
     result_text += str(cities_search.query(f"Create a brew (2-3 lines) description about the city of {ciutat}")) + "\n"
 
+    result_text += f"\n**Other similar cities are {result['monument_name'][1]} and {result['monument_name'][2]}**"
 
     figure, ax = plt.subplots(figsize=(12, 8))
     # Retrieve the area as a GeoDataFrame
