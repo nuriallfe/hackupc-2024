@@ -249,6 +249,10 @@ class CreateDataCities:
 			data = Monthly(point, start, end)
 			data = data.fetch()
 
+			# Ensure the index is a DatetimeIndex
+			if not isinstance(data.index, pd.DatetimeIndex):
+				data.index = pd.to_datetime(data.index, format='%Y-%m-%d')
+
 			months_data = {
 				'January': data[data.index.month == 1],
 				'February': data[data.index.month == 2],
