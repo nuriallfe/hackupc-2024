@@ -49,7 +49,7 @@ def process_user_input(user_input):
 
 def search_landmarks(user_input):
     start_time = time.time()
-    city_searcher = CloseSearch(file="../data/city.csv", name="city", textual_var="wiki_content")
+    city_searcher = CloseSearch(file="../data/city.csv", name="city", textual_var="wiki_content") #primer cop exectuar amb clear = True
     load_time = time.time()
     #print(f"Loaded city searcher: {load_time - start_time} s \n")
     results = city_searcher.search_similars(user_input, number=1)
@@ -74,8 +74,6 @@ def search_landmarks(user_input):
         lons = [e for e in results["longitude"]]
         lats = [e for e in results["latitude"]]
         for i, landmark in enumerate(results["landmark"]):
-            print(landmark)
-            print(results.columns)
             #print(landmark)
             response = monuments_search.query(f"What do you know about the landmark {landmark}?")
             search_city_time = time.time()
