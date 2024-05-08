@@ -4,6 +4,8 @@ from sentence_transformers import SentenceTransformer
 from sqlalchemy import create_engine, text
 import pandas as pd
 from math import radians, sin, cos, sqrt, atan2
+from sqlalchemy import MetaData, Table, Column
+
 
 # Function to calculate distance between two points using haversine formula
 def calculate_distance(lat1, lon1, lat2, lon2):
@@ -28,7 +30,7 @@ def calculate_distance(lat1, lon1, lat2, lon2):
     return distance
 
 class CloseSearch:
-    def __init__(self, file='./data/data.csv', name = "monuments", textual_var = "wiki_content", username = 'demo', password = 'demo', hostname='localhost', port='1972', namespace='USER', add_distances = False, lat1 = None, long1 = None, recalculate = False):
+    def __init__(self, file='./data/data.csv', name="monuments", textual_var="wiki_content", username='demo', password='demo', hostname='localhost', port='1972', namespace='USER', add_distances=False, lat1=None, long1=None, recalculate=False, clear = False):
         self.name = name
         self.username = username
         self.password = password
@@ -37,8 +39,11 @@ class CloseSearch:
         self.port = port
         self.namespace = namespace
         self.engine = None
+        self.clear = clear
         self.model = None
         self.data = pd.read_csv(file)
+        self.lat1 = lat1
+        self.long1 = long1
         if add_distances:
             self.data['distance'] = self.data.apply(lambda row: calculate_distance(lat1, long1, row['latitude'], row['longitude']), axis=1)
         self.data.columns = self.data.columns.str.replace(' ', '_')
@@ -75,12 +80,30 @@ class CloseSearch:
                     conn.execute(text(sql))
                 except:
                     if self.recalculate:
+                        metadata = MetaData()
+                        table = Table(self.name, metadata, autoload_with=self.engine)
+                        # Check if the column exists before dropping it
+                        if 'distance' in table.columns:
+                            # Drop the 'distance' column
+                            sql = f"ALTER TABLE {self.name} DROP COLUMN distance"
+                            conn.execute(text(sql))
+                        if 'latitude' in self.columns and 'longitude' in self.columns:
+                            sql = f"ALTER TABLE {self.name} ADD COLUMN distance DOUBLE;"
+                            conn.execute(text(sql))
+                        self.data['distance'] = self.data.apply(lambda row: calculate_distance(self.lat1, self.long1, row['latitude'], row['longitude']), axis=1)
+                        for index, row in self.data.iterrows():
+                            distance = row['distance']
+                            sql = f"UPDATE {self.name} SET distance = :distance WHERE landmark = :landmark"
+                            conn.execute(text(sql), {"distance": distance, "landmark": row['landmark']})
+                        self.embeddings = True
+                    if self.clear:
                         sql = f"DROP TABLE {self.name}"
                         conn.execute(text(sql))
                         sql = f"CREATE TABLE {self.name} (\n"
                         sql += ",\n".join(f'{e} {s_values[str(t)]}' for e, t in zip(self.columns, self.types))
                         sql += ", \n description_vector VECTOR(DOUBLE, 384)\n)"
                         conn.execute(text(sql))
+                        self.embeddings = False
                     else:
                         self.embeddings = True
 
@@ -104,7 +127,7 @@ class CloseSearch:
                     to_execute['description_vector'] = str(row['description_vector'])
                     conn.execute(sql, to_execute)
 
-    def search_similars(self, description_search, condition = "", number= 10):
+    def search_similars(self, description_search, condition="", number=10):
         search_vector = self.model.encode(description_search, normalize_embeddings=True).tolist()
         with self.engine.connect() as conn:
             with conn.begin():
@@ -117,5 +140,3 @@ class CloseSearch:
         results_df = pd.DataFrame(results, columns=list(self.columns) + ["description_vector"])
         pd.set_option('display.max_colwidth', None)  # Easier to read description
         return results_df
-
-
