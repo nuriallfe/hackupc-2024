@@ -25,7 +25,6 @@ function createWindow() {
 }
 
 app.on('ready', createWindow);
-
 ipcMain.on('process-description', (event, userInput) => {
     // Execute Python code
     const pythonProcess = spawn('python', ['../python_script.py', userInput]);
@@ -35,13 +34,21 @@ ipcMain.on('process-description', (event, userInput) => {
         const result = data.toString();
         mainWindow.webContents.send('display-conversation', result, 'system', '../data/generatedmap.png');
     });
-    console.log("hola")
 
     // Handle errors
     pythonProcess.on('error', (error) => {
         console.error('Error executing Python script:', error);
     });
+
+    // Handle process exit
+    pythonProcess.on('exit', (code, signal) => {
+        console.error(`Python process exited with code ${code} and signal ${signal}`);
+        if (code !== 0) {
+            console.error(`Python process exited with code ${code} and signal ${signal}`);
+        }
+    });
 });
+
 
 ipcMain.on('process-image', (event, imageURL) => {
     console.log(imageURL)
