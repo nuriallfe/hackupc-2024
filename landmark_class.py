@@ -81,7 +81,7 @@ class CreateDataLandmarks:
 			The dictionary of the locations.
 		"""
 		geolocator = geopy.Nominatim(user_agent="landmarks", timeout=10)
-		coordinates = {'latitude': [], 'longitude': []}
+		coordinates = {'latitude': [], 'longitude': [], 'altitude': []}
 		for total in self.totals:
 			location = geolocator.geocode(total)
 			if location is None:
@@ -94,12 +94,15 @@ class CreateDataLandmarks:
 					print(f"Location not found for {total}.")
 					coordinates['latitude'].append(None)
 					coordinates['longitude'].append(None)
+					coordinates['altitude'].append(None)
 				else:
 					coordinates['latitude'].append(location.latitude)
 					coordinates['longitude'].append(location.longitude)
+					coordinates['altitude'].append(location.altitude)
 			else:
 				coordinates['latitude'].append(location.latitude)
 				coordinates['longitude'].append(location.longitude)
+				coordinates['altitude'].append(location.altitude)
 		return coordinates
 
 	def search_wikipedia(self, total: str):
@@ -393,7 +396,7 @@ class CreateDataLandmarks:
 			'latitude': self.coordinates['latitude'],
 			'longitude': self.coordinates['longitude'],
 			'wiki_title': [self.wikipedia_data[total]['title'] for total in self.totals],
-			'wiki_content': [self.wikipedia_data[total]['content'] for total in self.totals]
+			'wiki_content': [self.wikipedia_data[total]['content'] for total in self.totals],
 		}
 
 		self.df = pd.DataFrame(data)
@@ -413,5 +416,4 @@ class CreateDataLandmarks:
 		self.coordinates = {'latitude': self.df['latitude'].tolist(), 'longitude': self.df['longitude'].tolist()}
 		self.wikipedia_data = {total: {'title': title, 'content': content} for total, title, content in zip(self.totals, self.df['wiki_title'].tolist(), self.df['wiki_content'].tolist())}
 	
-
 		self.df.to_csv(f"{self.save_dir}/data.csv", index=False)
