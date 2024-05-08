@@ -44,6 +44,10 @@ class CloseSearch:
         self.data = pd.read_csv(file)
         if "weather_data" in self.data.columns:
             self.data = self.data.drop("weather_data", axis=1)
+
+        if textual_var in self.data.columns:
+            self.textual_data = self.data[textual_var]
+            self.data = self.data.drop(textual_var, axis=1)
         self.lat1 = lat1
         self.long1 = long1
         if add_distances:
@@ -77,7 +81,7 @@ class CloseSearch:
             with conn.begin():
                 try:
                     sql = f"CREATE TABLE {self.name} (\n"
-                    sql += ",\n".join(f'{e} {s_values[str(t)]}' for e, t in zip(self.columns[:-1], self.types[:-1]))
+                    sql += ",\n".join(f'{e} {s_values[str(t)]}' for e, t in zip(self.columns, self.types))
                     sql += ", \n description_vector VECTOR(DOUBLE, 384)\n)"
                     conn.execute(text(sql))
                 except:
@@ -113,16 +117,17 @@ class CloseSearch:
         self.model = SentenceTransformer('all-MiniLM-L6-v2')
 
     def generate_embeddings(self):
-        self.data["description_vector"] = self.model.encode(self.data[self.textual_var].tolist(), normalize_embeddings=True).tolist()
+        self.data["description_vector"] = self.model.encode(self.textual_data.tolist(), normalize_embeddings=True).tolist()
 
     def insert_data_into_database(self):
+        print("inserting data? només hauria de fer això el primer cop")
         with self.engine.connect() as conn:
             with conn.begin():
                 for index, row in self.data.iterrows():
                     sql = text(f"""
                         INSERT INTO {self.name} 
-                        ({",".join(e for e in self.columns[:-1])}, description_vector) 
-                        VALUES ({",".join(':'+e for e in self.columns[:-1])}, TO_VECTOR(:description_vector))
+                        ({",".join(e for e in self.columns)}, description_vector) 
+                        VALUES ({",".join(':'+e for e in self.columns)}, TO_VECTOR(:description_vector))
                     """)
                     to_execute = {k: row[k] for k in self.columns if k != self.textual_var}
                     to_execute['description_vector'] = str(row['description_vector'])
