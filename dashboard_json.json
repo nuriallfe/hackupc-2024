@@ -1,0 +1,372 @@
+{
+  "__inputs": [
+    {
+      "name": "DS_GRAFANACLOUD-INFINITY",
+      "label": "grafanacloud-infinity",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "yesoreyeram-infinity-datasource",
+      "pluginName": "Infinity"
+    }
+  ],
+  "__elements": {},
+  "__requires": [
+    {
+      "type": "panel",
+      "id": "bargauge",
+      "name": "Bar gauge",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "geomap",
+      "name": "Geomap",
+      "version": ""
+    },
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "12.0.0-86898"
+    },
+    {
+      "type": "panel",
+      "id": "stat",
+      "name": "Stat",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "text",
+      "name": "Text",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "timeseries",
+      "name": "Time series",
+      "version": ""
+    },
+    {
+      "type": "datasource",
+      "id": "yesoreyeram-infinity-datasource",
+      "name": "Infinity",
+      "version": "3.2.0"
+    }
+  ],
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "panels": [
+    {
+      "gridPos": {
+        "h": 2,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 22,
+      "options": {
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
+        "content": "<div style=\"text-align:center; font-size:28px; font-weight:bold; color:#ecf0f1;\">\r\n  🌍 Industrial Revolution: <span style=\"color:#e74c3c;\">Impact on CO₂</span>, \r\n  <span style=\"color:#2980b9;\">Health</span> & \r\n  <span style=\"color:#27ae60;\">Global Trends</span>\r\n</div>\r\n",
+        "mode": "html"
+      },
+      "pluginVersion": "12.0.0-86898",
+      "type": "text"
+    },
+    {
+      "gridPos": {
+        "h": 8,
+        "w": 3,
+        "x": 0,
+        "y": 2
+      },
+      "id": 30,
+      "options": {
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
+        "content": "<img src=\"https://www.upf.edu/documents/7018044/239140316/E_WEB_09.png/23a7d7e4-6328-6008-69ad-f350991035be?t=1647857982096\">",
+        "mode": "html"
+      },
+      "pluginVersion": "12.0.0-86898",
+      "type": "text"
+    },
+    {
+      "gridPos": {
+        "h": 8,
+        "w": 3,
+        "x": 3,
+        "y": 2
+      },
+      "id": 29,
+      "options": {
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
+        "content": "<img src=\"https://www.caib.es/sites/agenda2030/en/agenda_2030/archivopub.do?ctrl=MCRST10425ZI390258&id=390258\">",
+        "mode": "markdown"
+      },
+      "pluginVersion": "12.0.0-86898",
+      "type": "text"
+    },
+    {
+      "gridPos": {
+        "h": 8,
+        "w": 3,
+        "x": 6,
+        "y": 2
+      },
+      "id": 31,
+      "options": {
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
+        "content": "<img src=\"https://sp-ao.shortpixel.ai/client/to_webp,q_lossy,ret_img,w_1500,h_1500/https://unhabitat.la/wp-content/uploads/2024/01/E-WEB-Goal-13.png\">",
+        "mode": "html"
+      },
+      "pluginVersion": "12.0.0-86898",
+      "type": "text"
+    },
+    {
+      "datasource": {
+        "type": "yesoreyeram-infinity-datasource",
+        "uid": "${DS_GRAFANACLOUD-INFINITY}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 43,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 6,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 0,
+          "fieldMinMax": false,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "dark-red"
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Year"
+            },
+            "properties": []
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "summary"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#22ff00",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 14,
+        "w": 10,
+        "x": 9,
+        "y": 2
+      },
+      "id": 3,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.0.0-86898",
+      "targets": [
+        {
+          "columns": [
+            {
+              "selector": "emissions_total",
+              "text": "emissions_total",
+              "type": "number"
+            },
+            {
+              "selector": "Entity",
+              "text": "Country",
+              "type": "string"
+            },
+            {
+              "selector": "Year",
+              "text": "Year",
+              "timestampFormat": "2006",
+              "type": "timestamp"
+            }
+          ],
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "${DS_GRAFANACLOUD-INFINITY}"
+          },
+          "filters": [],
+          "format": "table",
+          "global_query_id": "",
+          "parser": "backend",
+          "refId": "A",
+          "root_selector": "",
+          "source": "url",
+          "summarizeBy": "Year",
+          "summarizeExpression": "sum(emissions_total)",
+          "type": "csv",
+          "url": "https://ourworldindata.org/grapher/annual-co2-emissions-per-country.csv?v=1&csvType=full&useColumnShortNames=true",
+          "url_options": {
+            "data": "",
+            "method": "GET"
+          }
+        }
+      ],
+      "title": "Global World Emisions",
+      "transparent": true,
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "yesoreyeram-infinity-datasource",
+        "uid": "${DS_GRAFANACLOUD-INFINITY}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "fieldMinMax": false,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 5,
+        "x": 19,
+        "y": 2
+      },
+      "id": 13,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.0.0-86898",
+      "targets": [
+        {
+          "columns": [
+            {
+              "selector": "Global average temperature anomaly relative to 1861-1890",
+              "text": "Global average temperature anomaly relative to 1861-1890",
+              "type": "number"
+            },
+            {
+              "selector": "Entity",
+              "text": "Entity",
+              "type": "string"
+            }
+          ],
+          "data": "Entity,Year,Global average temperature anomaly relative to 1861-1890\nNorthern Hemisphere,1850,-0.055067\nNorthern Hemisphere,1851,0.1615803\nNorthern Hemisphere,1852,0.14512725\nNorthern Hemisphere,1853,0.13543713\nNorthern Hemisphere,1854,0.2061396\nNorthern Hemisphere,1855,0.13525501\nNorthern Hemisphere,1856,0.04728845\nNorthern Hemisphere,1857,-0.07056733\nNorthern Hemisphere,1858,0.022224907\nNorthern Hemisphere,1859,0.1330458\nNorthern Hemisphere,1860,-0.07820275\nNorthern Hemisphere,1861,-0.024383958\nNorthern Hemisphere,1862,-0.32068256\nNorthern Hemisphere,1863,0.07966859\nNorthern Hemisphere,1864,-0.08087095\nNorthern Hemisphere,1865,0.013526325\nNorthern Hemisphere,1866,0.007045571\nNorthern Hemisphere,1867,-0.024325486\nNorthern Hemisphere,1868,0.02238432\nNorthern Hemisphere,1869,0.13202271\nNorthern Hemisphere,1870,0.06868789\nNorthern Hemisphere,1871,-0.0600903\nNorthern Hemisphere,1872,0.023669574\nNorthern Hemisphere,1873,0.0053049666\nNorthern Hemisphere,1874,0.08709658\nNorthern Hemisphere,1875,-0.10289302\nNorthern Hemisphere,1876,-0.05413693\nNorthern Hemisphere,1877,0.27946702\nNorthern Hemisphere,1878,0.45204005\nNorthern Hemisphere,1879,0.044580672\nNorthern Hemisphere,1880,-0.0031684595\nNorthern Hemisphere,1881,0.09677938\nNorthern Hemisphere,1882,0.007850175\nNorthern Hemisphere,1883,-0.046234157\nNorthern Hemisphere,1884,-0.25363216\nNorthern Hemisphere,1885,-0.12880734\nNorthern Hemisphere,1886,-0.064637\nNorthern Hemisphere,1887,-0.11338975\nNorthern Hemisphere,1888,0.00838009\nNorthern Hemisphere,1889,0.12036339\nNorthern Hemisphere,1890,-0.14284292\nNorthern Hemisphere,1891,-0.031072702\nNorthern Hemisphere,1892,-0.19523093\nNorthern Hemisphere,1893,-0.17589429\nNorthern Hemisphere,1894,-0.061767455\nNorthern Hemisphere,1895,-0.06429144\nNorthern Hemisphere,1896,0.087389\nNorthern Hemisphere,1897,0.12926888\nNorthern Hemisphere,1898,-0.049617704\nNorthern Hemisphere,1899,0.047784124\nNorthern Hemisphere,1900,0.18289912\nNorthern Hemisphere,1901,0.16592212\nNorthern Hemisphere,1902,-0.079038374\nNorthern Hemisphere,1903,-0.12423136\nNorthern Hemisphere,1904,-0.19744322\nNorthern Hemisphere,1905,-0.022676524\nNorthern Hemisphere,1906,0.120518185\nNorthern Hemisphere,1907,-0.15572718\nNorthern Hemisphere,1908,-0.09693255\nNorthern Hemisphere,1909,-0.11278056\nNorthern Hemisphere,1910,-0.11040311\nNorthern Hemisphere,1911,-0.07211446\nNorthern Hemisphere,1912,-0.1492354\nNorthern Hemisphere,1913,-0.11363318\nNorthern Hemisphere,1914,0.111980535\nNorthern Hemisphere,1915,0.20557371\nNorthern Hemisphere,1916,-0.062365796\nNorthern Hemisphere,1917,-0.20338956\nNorthern Hemisphere,1918,-0.08821573\nNorthern Hemisphere,1919,0.008888607\nNorthern Hemisphere,1920,0.07203216\nNorthern Hemisphere,1921,0.21793915\nNorthern Hemisphere,1922,0.078594424\nNorthern Hemisphere,1923,0.1259217\nNorthern Hemisphere,1924,0.18856066\nNorthern Hemisphere,1925,0.21273372\nNorthern Hemisphere,1926,0.37933686\nNorthern Hemisphere,1927,0.27445424\nNorthern Hemisphere,1928,0.29389182\nNorthern Hemisphere,1929,0.04474229\nNorthern Hemisphere,1930,0.35081705\nNorthern Hemisphere,1931,0.42669213\nNorthern Hemisphere,1932,0.34339574\nNorthern Hemisphere,1933,0.11577792\nNorthern Hemisphere,1934,0.3274267\nNorthern Hemisphere,1935,0.2942787\nNorthern Hemisphere,1936,0.3198338\nNorthern Hemisphere,1937,0.5025954\nNorthern Hemisphere,1938,0.5403174\nNorthern Hemisphere,1939,0.43422043\nNorthern Hemisphere,1940,0.50281006\nNorthern Hemisphere,1941,0.45631954\nNorthern Hemisphere,1942,0.44097042\nNorthern Hemisphere,1943,0.49330673\nNorthern Hemisphere,1944,0.60089463\nNorthern Hemisphere,1945,0.46436378\nNorthern Hemisphere,1946,0.3693552\nNorthern Hemisphere,1947,0.42503858\nNorthern Hemisphere,1948,0.38005054\nNorthern Hemisphere,1949,0.3133171\nNorthern Hemisphere,1950,0.18993662\nNorthern Hemisphere,1951,0.4346785\nNorthern Hemisphere,1952,0.45064667\nNorthern Hemisphere,1953,0.5874084\nNorthern Hemisphere,1954,0.34971154\nNorthern Hemisphere,1955,0.25524187\nNorthern Hemisphere,1956,0.101699926\nNorthern Hemisphere,1957,0.3450615\nNorthern Hemisphere,1958,0.463525\nNorthern Hemisphere,1959,0.427905\nNorthern Hemisphere,1960,0.3812258\nNorthern Hemisphere,1961,0.37409857\nNorthern Hemisphere,1962,0.42903498\nNorthern Hemisphere,1963,0.4511935\nNorthern Hemisphere,1964,0.11982728\nNorthern Hemisphere,1965,0.18569663\nNorthern Hemisphere,1966,0.2918693\nNorthern Hemisphere,1967,0.34169662\nNorthern Hemisphere,1968,0.24159104\nNorthern Hemisphere,1969,0.28049123\nNorthern Hemisphere,1970,0.25832948\nNorthern Hemisphere,1971,0.15186635\nNorthern Hemisphere,1972,0.13094598\nNorthern Hemisphere,1973,0.40243065\nNorthern Hemisphere,1974,0.13119599\nNorthern Hemisphere,1975,0.2699471\nNorthern Hemisphere,1976,0.12896669\nNorthern Hemisphere,1977,0.4597997\nNorthern Hemisphere,1978,0.36893275\nNorthern Hemisphere,1979,0.41191036\nNorthern Hemisphere,1980,0.5201363\nNorthern Hemisphere,1981,0.72079253\nNorthern Hemisphere,1982,0.37095115\nNorthern Hemisphere,1983,0.5730429\nNorthern Hemisphere,1984,0.35120758\nNorthern Hemisphere,1985,0.32880247\nNorthern Hemisphere,1986,0.4428468\nNorthern Hemisphere,1987,0.5765443\nNorthern Hemisphere,1988,0.69649047\nNorthern Hemisphere,1989,0.59819657\nNorthern Hemisphere,1990,0.84481627\nNorthern Hemisphere,1991,0.7660203\nNorthern Hemisphere,1992,0.4777385\nNorthern Hemisphere,1993,0.5732742\nNorthern Hemisphere,1994,0.704055\nNorthern Hemisphere,1995,0.9494654\nNorthern Hemisphere,1996,0.6725781\nNorthern Hemisphere,1997,0.9155499\nNorthern Hemisphere,1998,1.0951204\nNorthern Hemisphere,1999,0.85719246\nNorthern Hemisphere,2000,0.8679054\nNorthern Hemisphere,2001,1.0090723\nNorthern Hemisphere,2002,1.0495435\nNorthern Hemisphere,2003,1.1013008\nNorthern Hemisphere,2004,1.0143192\nNorthern Hemisphere,2005,1.2122287\nNorthern Hemisphere,2006,1.1755902\nNorthern Hemisphere,2007,1.2129318\nNorthern Hemisphere,2008,1.0525335\nNorthern Hemisphere,2009,1.0875689\nNorthern Hemisphere,2010,1.300329\nNorthern Hemisphere,2011,1.1061754\nNorthern Hemisphere,2012,1.1651609\nNorthern Hemisphere,2013,1.1575035\nNorthern Hemisphere,2014,1.2886233\nNorthern Hemisphere,2015,1.51167\nNorthern Hemisphere,2016,1.6360222\nNorthern Hemisphere,2017,1.4962262\nNorthern Hemisphere,2018,1.340491\nNorthern Hemisphere,2019,1.5245727\nNorthern Hemisphere,2020,1.6567389\nNorthern Hemisphere,2021,1.459022\nNorthern Hemisphere,2022,1.4806312\nNorthern Hemisphere,2023,1.7946954\nNorthern Hemisphere,2024,1.9299376\nNorthern Hemisphere,2025,2.0565522\nSouthern hemisphere,1850,-0.055760294\nSouthern hemisphere,1851,0.09631559\nSouthern hemisphere,1852,0.12067008\nSouthern hemisphere,1853,0.048449486\nSouthern hemisphere,1854,-0.064585805\nSouthern hemisphere,1855,-0.004493027\nSouthern hemisphere,1856,0.036599606\nSouthern hemisphere,1857,-0.13929725\nSouthern hemisphere,1858,-0.07516077\nSouthern hemisphere,1859,0.029019356\nSouthern hemisphere,1860,0.022467911\nSouthern hemisphere,1861,-0.1092464\nSouthern hemisphere,1862,-0.027460665\nSouthern hemisphere,1863,-0.04356125\nSouthern hemisphere,1864,-0.12546372\nSouthern hemisphere,1865,0.046106488\nSouthern hemisphere,1866,0.034974933\nSouthern hemisphere,1867,0.034932762\nSouthern hemisphere,1868,-0.0014431169\nSouthern hemisphere,1869,-0.040611118\nSouthern hemisphere,1870,0.000052572228\nSouthern hemisphere,1871,0.047560304\nSouthern hemisphere,1872,0.044704765\nSouthern hemisphere,1873,0.036696732\nSouthern hemisphere,1874,-0.109003454\nSouthern hemisphere,1875,0.076236635\nSouthern hemisphere,1876,-0.06948739\nSouthern hemisphere,1877,0.24291082\nSouthern hemisphere,1878,0.24992508\nSouthern hemisphere,1879,0.07274616\nSouthern hemisphere,1880,0.09609981\nSouthern hemisphere,1881,0.16332506\nSouthern hemisphere,1882,0.12568516\nSouthern hemisphere,1883,0.07788083\nSouthern hemisphere,1884,-0.006412505\nSouthern hemisphere,1885,-0.08884436\nSouthern hemisphere,1886,-0.052574724\nSouthern hemisphere,1887,-0.15958628\nSouthern hemisphere,1888,-0.04254237\nSouthern hemisphere,1889,0.10444102\nSouthern hemisphere,1890,-0.14627793\nSouthern hemisphere,1891,-0.046961695\nSouthern hemisphere,1892,-0.09529063\nSouthern hemisphere,1893,-0.08874869\nSouthern hemisphere,1894,-0.18116489\nSouthern hemisphere,1895,-0.10861626\nSouthern hemisphere,1896,0.06919196\nSouthern hemisphere,1897,0.07572627\nSouthern hemisphere,1898,-0.19737104\nSouthern hemisphere,1899,-0.03405595\nSouthern hemisphere,1900,0.07270858\nSouthern hemisphere,1901,-0.028147131\nSouthern hemisphere,1902,-0.07427922\nSouthern hemisphere,1903,-0.21774736\nSouthern hemisphere,1904,-0.27298346\nSouthern hemisphere,1905,-0.06831443\nSouthern hemisphere,1906,-0.03414029\nSouthern hemisphere,1907,-0.12782994\nSouthern hemisphere,1908,-0.20611134\nSouthern hemisphere,1909,-0.23399827\nSouthern hemisphere,1910,-0.22682038\nSouthern hemisphere,1911,-0.2814481\nSouthern hemisphere,1912,-0.07724643\nSouthern hemisphere,1913,-0.095793515\nSouthern hemisphere,1914,0.08774179\nSouthern hemisphere,1915,0.1356774\nSouthern hemisphere,1916,-0.05308503\nSouthern hemisphere,1917,-0.15765437\nSouthern hemisphere,1918,-0.035916954\nSouthern hemisphere,1919,0.06512877\nSouthern hemisphere,1920,0.055853188\nSouthern hemisphere,1921,0.025767624\nSouthern hemisphere,1922,-0.03202632\nSouthern hemisphere,1923,-0.036689937\nSouthern hemisphere,1924,-0.08756858\nSouthern hemisphere,1925,-0.052422196\nSouthern hemisphere,1926,0.10014863\nSouthern hemisphere,1927,-0.008085935\nSouthern hemisphere,1928,0.017772079\nSouthern hemisphere,1929,-0.10503283\nSouthern hemisphere,1930,0.020167619\nSouthern hemisphere,1931,0.091108024\nSouthern hemisphere,1932,0.09027633\nSouthern hemisphere,1933,-0.035871267\nSouthern hemisphere,1934,0.048495084\nSouthern hemisphere,1935,0.018198311\nSouthern hemisphere,1936,0.06571981\nSouthern hemisphere,1937,0.18360215\nSouthern hemisphere,1938,0.1598766\nSouthern hemisphere,1939,0.20878066\nSouthern hemisphere,1940,0.37365705\nSouthern hemisphere,1941,0.34453455\nSouthern hemisphere,1942,0.2864372\nSouthern hemisphere,1943,0.24413194\nSouthern hemisphere,1944,0.41191113\nSouthern hemisphere,1945,0.3464084\nSouthern hemisphere,1946,0.117611066\nSouthern hemisphere,1947,0.1171457\nSouthern hemisphere,1948,0.09522241\nSouthern hemisphere,1949,0.123673946\nSouthern hemisphere,1950,0.081415236\nSouthern hemisphere,1951,0.16760908\nSouthern hemisphere,1952,0.3046579\nSouthern hemisphere,1953,0.29244858\nSouthern hemisphere,1954,0.14138348\nSouthern hemisphere,1955,0.074733764\nSouthern hemisphere,1956,0.09656432\nSouthern hemisphere,1957,0.30886415\nSouthern hemisphere,1958,0.22580537\nSouthern hemisphere,1959,0.20068087\nSouthern hemisphere,1960,0.112450525\nSouthern hemisphere,1961,0.3104974\nSouthe
